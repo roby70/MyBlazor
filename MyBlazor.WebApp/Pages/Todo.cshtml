@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Blazor
+@using MyBlazor.Models
+@using MyBlazor.Resources
+@page "/todo"
+
+<h1>@Messages.Todo_Title</h1>
+
+@if (_todos.Count == 0)
+{
+    <p>@Messages.Todo_NoItems</p>   
+}
+else
+{
+    <p>@string.Format(Messages.Todo_CheckedCount, _todos.Count(_ => _.IsDone))</p>
+}
+
+<ul>
+    @foreach (var item in _todos)
+    {
+        <li>
+            <input type="checkbox" bind="@item.IsDone"/>
+            @item.Title
+            <button class="btn btn-sm" onclick="@(() => RemoveTodo(item))">
+                <span class="oi oi-x"></span>
+            </button>
+        </li>
+    }
+</ul>
+
+<input placeholder="Something todo" bind="@_newTodo"/>
+<button class="btn btn-sm" onclick="@AddTodo"><span class="oi oi-plus"></span> @Messages.AddTodo_Button_Caption</button>
+
+@functions
+{
+    readonly IList<TodoItem> _todos = new List<TodoItem>();
+
+    string _newTodo = string.Empty;
+
+    void AddTodo()
+    {
+        _todos.Add(new TodoItem { Title = _newTodo });
+        _newTodo = string.Empty;
+    }
+
+    void RemoveTodo(TodoItem item)
+    {
+        _todos.Remove(item);
+    }
+}
